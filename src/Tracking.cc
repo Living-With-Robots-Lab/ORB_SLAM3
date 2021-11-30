@@ -601,6 +601,27 @@ bool Tracking::ParseCamParamFile(cv::FileStorage &fSettings)
             mDistCoef.at<float>(4) = node.real();
         }
 
+        node = fSettings["Camera.k4"];
+        if(!node.empty() && node.isReal())
+        {
+            mDistCoef.resize(6);
+            mDistCoef.at<float>(5) = node.real();
+        }
+
+        node = fSettings["Camera.k5"];
+        if(!node.empty() && node.isReal())
+        {
+            mDistCoef.resize(7);
+            mDistCoef.at<float>(6) = node.real();
+        }
+
+        node = fSettings["Camera.k6"];
+        if(!node.empty() && node.isReal())
+        {
+            mDistCoef.resize(8);
+            mDistCoef.at<float>(7) = node.real();
+        }
+
         if(b_miss_params)
         {
             return false;

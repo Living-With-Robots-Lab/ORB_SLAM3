@@ -94,7 +94,6 @@ Frame::Frame(const Frame &frame)
 #endif
 }
 
-
 Frame::Frame(const cv::Mat &imLeft, const cv::Mat &imRight, const double &timeStamp, ORBextractor* extractorLeft, ORBextractor* extractorRight, ORBVocabulary* voc, cv::Mat &K, cv::Mat &distCoef, const float &bf, const float &thDepth, GeometricCamera* pCamera, Frame* pPrevF, const IMU::Calib &ImuCalib)
     :mpcpi(NULL), mpORBvocabulary(voc),mpORBextractorLeft(extractorLeft),mpORBextractorRight(extractorRight), mTimeStamp(timeStamp), mK(K.clone()), mDistCoef(distCoef.clone()), mbf(bf), mThDepth(thDepth),
      mImuCalib(ImuCalib), mpImuPreintegrated(NULL), mpPrevFrame(pPrevF),mpImuPreintegratedFrame(NULL), mpReferenceKF(static_cast<KeyFrame*>(NULL)), mbImuPreintegrated(false),
@@ -609,15 +608,22 @@ bool Frame::ProjectPointDistort(MapPoint* pMP, cv::Point2f &kp, float &u, float 
     float k2 = mDistCoef.at<float>(1);
     float p1 = mDistCoef.at<float>(2);
     float p2 = mDistCoef.at<float>(3);
-    float k3 = 0;
-    if(mDistCoef.total() == 5)
-    {
-        k3 = mDistCoef.at<float>(4);
+    float k3p[4] = {0,0,0,0};
+    for (unsigned int i = 0; i < mDistCoef.total()-4; i++) {
+        k3p[i] = mDistCoef.at<float>(i+4);
     }
 
     // Radial distorsion
-    float x_distort = x * (1 + k1 * r2 + k2 * r2 * r2 + k3 * r2 * r2 * r2);
-    float y_distort = y * (1 + k1 * r2 + k2 * r2 * r2 + k3 * r2 * r2 * r2);
+    float distort_f = 1 + k1 * r2 + k2 * r2 * r2;
+    for (unsigned int i = 3; i < 7; i++) {
+        float r2p = 1;
+        for (unsigned j = 1; j <=i; j++){
+            r2p *= r2;
+        }
+        distort_f += k3p[i-3] * r2p;
+    }
+    float x_distort = x * distort_f;
+    float y_distort = y * distort_f;
 
     // Tangential distorsion
     x_distort = x_distort + (2 * p1 * x * y + p2 * (r2 + 2 * x * x));
