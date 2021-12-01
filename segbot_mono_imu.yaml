@@ -9,7 +9,7 @@ Camera.type: "PinHole"
 Camera.fx: 612.3333129882812
 Camera.fy: 612.24560546875
 Camera.cx: 638.3326416015625
-Camera.cy: 366.8567199707031,
+Camera.cy: 366.8567199707031
 
 Camera.k1: 0.6240869164466858
 Camera.k2: -2.6887660026550293
@@ -25,7 +25,7 @@ Camera.width: 1280
 Camera.height: 720
 
 # Camera frames per second 
-Camera.fps: 30.0
+Camera.fps: 15.0
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
 Camera.RGB: 0
@@ -45,7 +45,11 @@ IMU.NoiseGyro: 1.7e-4 #1.6968e-04
 IMU.NoiseAcc: 2.0000e-3 #2.0e-3
 IMU.GyroWalk: 1.9393e-05 
 IMU.AccWalk: 3.0000e-03 # 3e-03
-IMU.Frequency: 200
+IMU.Frequency: 208
+
+ThDepth: 2880.0
+# DepthMapFactor: 1000.0 # 1.0 for ROS_bag
+DepthMapFactor: 1.0
 
 #--------------------------------------------------------------------------------------------
 # ORB Parameters
