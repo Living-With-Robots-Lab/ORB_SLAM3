@@ -23,6 +23,13 @@
 #include<chrono>
 
 #include<ros/ros.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2/LinearMath/Matrix3x3.h>
+#include <tf2/LinearMath/Transform.h>
+#include <tf2/LinearMath/Vector3.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <geometry_msgs/TransformStamped.h>
 #include <cv_bridge/cv_bridge.h>
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
@@ -42,6 +49,8 @@ public:
     void GrabRGBD(const sensor_msgs::ImageConstPtr& msgRGB,const sensor_msgs::ImageConstPtr& msgD);
 
     ORB_SLAM3::System* mpSLAM;
+private:
+    void BroadcastTransform(const cv::Mat& Tcw, ros::Time time);
 };
 
 int main(int argc, char **argv)
@@ -106,7 +115,28 @@ void ImageGrabber::GrabRGBD(const sensor_msgs::ImageConstPtr& msgRGB,const senso
         ROS_ERROR("cv_bridge exception: %s", e.what());
         return;
     }
-    mpSLAM->TrackRGBD(cv_ptrRGB->image,cv_ptrD->image,cv_ptrRGB->header.stamp.toSec());
+    cv::Mat Tcw = mpSLAM->TrackRGBD(cv_ptrRGB->image,cv_ptrD->image,cv_ptrRGB->header.stamp.toSec());
+    if (Tcw.empty()) {
+        ROS_WARN("Camera Pose Lost!!");
+        return;
+    }
+    BroadcastTransform(Tcw, cv_ptrRGB->header.stamp);
 }
 
+void ImageGrabber::BroadcastTransform(const cv::Mat& Tcw, ros::Time time) {
+    static tf2_ros::TransformBroadcaster br;
 
+    tf2::Matrix3x3 tf2_rot(Tcw.at<float>(0, 0), Tcw.at<float>(0, 1), Tcw.at<float>(0, 2),
+                           Tcw.at<float>(1, 0), Tcw.at<float>(1, 1), Tcw.at<float>(1, 2),
+                           Tcw.at<float>(2, 0), Tcw.at<float>(2, 1), Tcw.at<float>(2, 2));
+    tf2::Vector3 tf2_trans(Tcw.at<float>(0, 3), Tcw.at<float>(1, 3), Tcw.at<float>(2, 3));
+    tf2::Transform tf2_transform(tf2_rot, tf2_trans);
+
+    geometry_msgs::TransformStamped transformStamped;
+    transformStamped.header.stamp = time;
+    transformStamped.header.frame_id = "orb_map";
+    transformStamped.child_frame_id = "nav_kinect_rgb_optical_frame";
+    tf2::convert(tf2_transform, transformStamped.transform);
+
+    br.sendTransform(transformStamped);
+}
