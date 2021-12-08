@@ -173,6 +173,8 @@ public:
 
     void ChangeDataset();
 
+    size_t GetCurrentFrameID();
+
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
 

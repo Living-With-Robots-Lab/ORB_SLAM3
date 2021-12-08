@@ -762,6 +762,10 @@ void System::ChangeDataset()
     mpTracker->NewDataset();
 }
 
+size_t System::GetCurrentFrameID() {
+    return mpTracker->mCurrentFrame.mnId;
+}
+
 #ifdef REGISTER_TIMES
 void System::InsertRectTime(double& time)
 {
