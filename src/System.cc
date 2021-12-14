@@ -766,6 +766,10 @@ size_t System::GetCurrentFrameID() {
     return mpTracker->mCurrentFrame.mnId;
 }
 
+size_t System::GetCurrentMapID() {
+    return mpAtlas->GetCurrentMap()->GetId();
+}
+
 #ifdef REGISTER_TIMES
 void System::InsertRectTime(double& time)
 {

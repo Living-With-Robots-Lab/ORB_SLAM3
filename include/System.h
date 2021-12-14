@@ -174,6 +174,7 @@ public:
     void ChangeDataset();
 
     size_t GetCurrentFrameID();
+    size_t GetCurrentMapID();
 
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
