@@ -770,6 +770,10 @@ size_t System::GetCurrentMapID() {
     return mpAtlas->GetCurrentMap()->GetId();
 }
 
+vector<Map*> System::GetAllMaps() {
+    return mpAtlas->GetAllMaps();
+}
+
 #ifdef REGISTER_TIMES
 void System::InsertRectTime(double& time)
 {
