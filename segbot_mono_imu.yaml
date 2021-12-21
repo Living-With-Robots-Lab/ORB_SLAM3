@@ -21,14 +21,14 @@ Camera.k5: -2.518296957015991
 Camera.k6: 1.4072048664093018
 
 # Camera resolution
-Camera.width: 1280
-Camera.height: 720
+Camera.width: 4096
+Camera.height: 3072
 
 # Camera frames per second 
 Camera.fps: 15.0
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
-Camera.RGB: 0
+Camera.RGB: 1
 
 # Transformation from camera to body-frame (imu)
 Tbc: !!opencv-matrix
@@ -47,8 +47,9 @@ IMU.GyroWalk: 1.9393e-05
 IMU.AccWalk: 3.0000e-03 # 3e-03
 IMU.Frequency: 208
 
-ThDepth: 2880.0
-# DepthMapFactor: 1000.0 # 1.0 for ROS_bag
+# ThDepth: 2880.0
+# DepthMapFactor: 1000.0
+ThDepth: 2.88
 DepthMapFactor: 1.0
 
 #--------------------------------------------------------------------------------------------
@@ -56,13 +57,13 @@ DepthMapFactor: 1.0
 #--------------------------------------------------------------------------------------------
 
 # ORB Extractor: Number of features per image
-ORBextractor.nFeatures: 1000 # 1000
+ORBextractor.nFeatures: 10000 # 1000
 
 # ORB Extractor: Scale factor between levels in the scale pyramid 	
 ORBextractor.scaleFactor: 1.2
 
 # ORB Extractor: Number of levels in the scale pyramid	
-ORBextractor.nLevels: 8
+ORBextractor.nLevels: 16
 
 # ORB Extractor: Fast threshold
 # Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
