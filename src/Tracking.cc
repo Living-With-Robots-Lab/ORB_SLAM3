@@ -646,8 +646,14 @@ bool Tracking::ParseCamParamFile(cv::FileStorage &fSettings)
         std::cout << "- p1: " << mDistCoef.at<float>(2) << std::endl;
         std::cout << "- p2: " << mDistCoef.at<float>(3) << std::endl;
 
-        if(mDistCoef.rows==5)
+        if(mDistCoef.rows>=5)
             std::cout << "- k3: " << mDistCoef.at<float>(4) << std::endl;
+        if(mDistCoef.rows>=6)
+            std::cout << "- k4: " << mDistCoef.at<float>(5) << std::endl;
+        if(mDistCoef.rows>=7)
+            std::cout << "- k5: " << mDistCoef.at<float>(6) << std::endl;
+        if(mDistCoef.rows>=8)
+            std::cout << "- k6: " << mDistCoef.at<float>(7) << std::endl;
 
         mK = cv::Mat::eye(3,3,CV_32F);
         mK.at<float>(0,0) = fx;
@@ -967,7 +973,7 @@ bool Tracking::ParseCamParamFile(cv::FileStorage &fSettings)
         std::cerr << "Check an example configuration file with the desired sensor" << std::endl;
     }
 
-    if(mSensor==System::STEREO || mSensor==System::IMU_STEREO)
+    if(mSensor==System::STEREO || mSensor==System::IMU_STEREO || mSensor==System::RGBD)
     {
         cv::FileNode node = fSettings["Camera.bf"];
         if(!node.empty() && node.isReal())
