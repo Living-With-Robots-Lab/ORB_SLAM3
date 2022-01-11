@@ -1395,7 +1395,7 @@ vector<Map*> System::GetAllMaps() {
     return mpAtlas->GetAllMaps();
 }
 
-eTrackingState System::GetCurrentState() {
+uint8_t System::GetCurrentState() {
     return mpTracker->mState;
 }
 
