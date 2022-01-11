@@ -1395,6 +1395,10 @@ vector<Map*> System::GetAllMaps() {
     return mpAtlas->GetAllMaps();
 }
 
+eTrackingState System::GetCurrentState() {
+    return mpTracker->mState;
+}
+
 #ifdef REGISTER_TIMES
 void System::InsertRectTime(double& time)
 {

@@ -189,6 +189,7 @@ public:
     size_t GetCurrentFrameID();
     size_t GetCurrentMapID();
     std::vector<Map*> GetAllMaps();
+    eTrackingState GetCurrentState();
 
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
