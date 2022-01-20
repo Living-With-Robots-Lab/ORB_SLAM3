@@ -82,6 +82,10 @@ public:
 
     bool isFinished();
 
+    void ForceMapMerge(KeyFrame* kfto,
+                       KeyFrame* kffrom,
+                       Sophus::SE3d transform);
+
     Viewer* mpViewer;
 
 #ifdef REGISTER_TIMES

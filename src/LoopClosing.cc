@@ -1212,6 +1212,22 @@ void LoopClosing::CorrectLoop()
     mLastLoopKFid = mpCurrentKF->mnId; //TODO old varible, it is not use in the new algorithm
 }
 
+void LoopClosing::ForceMapMerge(KeyFrame* kfto,
+                                KeyFrame* kffrom,
+                                Sophus::SE3d transform) {
+    unique_lock<mutex> lock(mMutexLoopQueue);
+    KeyFrame* mpCurrentKF_save = mpCurrentKF;
+    mpCurrentKF = kffrom;
+    mpMergeMatchedKF = kfto;
+    g2o::Sim3 g2oMergeScw(transform.unit_quaternion(),
+                          transform.translation(), 1.0);
+    mg2oMergeScw = g2oMergeScw;
+
+    MergeLocal();
+
+    mpCurrentKF = mpCurrentKF_save;
+}
+
 void LoopClosing::MergeLocal()
 {
     int numTemporalKFs = 25; //Temporal KFs in the local window if the map is inertial.

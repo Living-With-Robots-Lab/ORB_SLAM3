@@ -191,6 +191,10 @@ public:
     std::vector<Map*> GetAllMaps();
     uint8_t GetCurrentState();
 
+    void ForceMapMerge(KeyFrame* kfto,
+                       KeyFrame* kffrom,
+                       Sophus::SE3d transform);
+
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
     void InsertResizeTime(double& time);

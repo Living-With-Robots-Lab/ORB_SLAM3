@@ -1399,6 +1399,12 @@ uint8_t System::GetCurrentState() {
     return mpTracker->mState;
 }
 
+void System::ForceMapMerge(KeyFrame* kfto,
+                           KeyFrame* kffrom,
+                           Sophus::SE3d transform) {
+    mpLoopCloser->ForceMapMerge(kfto, kffrom, transform);
+}
+
 #ifdef REGISTER_TIMES
 void System::InsertRectTime(double& time)
 {
