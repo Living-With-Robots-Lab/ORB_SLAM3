@@ -1405,6 +1405,10 @@ void System::ForceMapMerge(KeyFrame* kfto,
     mpLoopCloser->ForceMapMerge(kfto, kffrom, transform);
 }
 
+void System::ForceTrackingLoss() {
+    mpTracker->mState = Tracking::LOST;
+}
+
 #ifdef REGISTER_TIMES
 void System::InsertRectTime(double& time)
 {

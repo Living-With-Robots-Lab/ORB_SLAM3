@@ -194,6 +194,7 @@ public:
     void ForceMapMerge(KeyFrame* kfto,
                        KeyFrame* kffrom,
                        Sophus::SE3d transform);
+    void ForceTrackingLoss();
 
 #ifdef REGISTER_TIMES
     void InsertRectTime(double& time);
