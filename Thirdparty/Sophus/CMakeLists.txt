@@ -10,7 +10,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_STANDARD 11)
+# set(CMAKE_CXX_STANDARD 11)
 
 # Set compiler specific settings (FixMe: Should not cmake do this for us automatically?)
 IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -99,14 +99,14 @@ add_custom_target(other SOURCES ${SOPHUS_OTHER_FILES})
 # Create 'test' make target using ctest
 option(BUILD_TESTS "Build tests." ON)
 if(BUILD_TESTS)
-    enable_testing()
-    add_subdirectory(test)
+    # enable_testing()
+    # add_subdirectory(test)
 endif()
 
 # Create examples make targets using ctest
 option(BUILD_EXAMPLES "Build examples." ON)
 if(BUILD_EXAMPLES)
-    add_subdirectory(examples)
+    # add_subdirectory(examples)
 endif()
 
 # Export package for use from the build tree
