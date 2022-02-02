@@ -1320,30 +1320,37 @@ void LoopClosing::MergeLocal(bool isForcedMerge)
         spLocalWindowKFs.insert(mpCurrentKF);
     }
 
-    vector<KeyFrame*> vpCovisibleKFs = mpCurrentKF->GetBestCovisibilityKeyFrames(numTemporalKFs);
-    spLocalWindowKFs.insert(vpCovisibleKFs.begin(), vpCovisibleKFs.end());
-    spLocalWindowKFs.insert(mpCurrentKF);
     const int nMaxTries = 5;
     int nNumTries = 0;
-    while(spLocalWindowKFs.size() < numTemporalKFs && nNumTries < nMaxTries)
-    {
-        vector<KeyFrame*> vpNewCovKFs;
-        vpNewCovKFs.empty();
-        for(KeyFrame* pKFi : spLocalWindowKFs)
+    vector<KeyFrame*> vpCovisibleKFs;
+    if (isForcedMerge) {
+        vpCovisibleKFs = pCurrentMap->GetAllKeyFrames();
+        spLocalWindowKFs.insert(vpCovisibleKFs.begin(), vpCovisibleKFs.end());
+        spLocalWindowKFs.insert(mpCurrentKF);
+    } else {
+        vector<KeyFrame*> vpCovisibleKFs = mpCurrentKF->GetBestCovisibilityKeyFrames(numTemporalKFs);
+        spLocalWindowKFs.insert(vpCovisibleKFs.begin(), vpCovisibleKFs.end());
+        spLocalWindowKFs.insert(mpCurrentKF);
+        while(spLocalWindowKFs.size() < numTemporalKFs && nNumTries < nMaxTries)
         {
-            vector<KeyFrame*> vpKFiCov = pKFi->GetBestCovisibilityKeyFrames(numTemporalKFs/2);
-            for(KeyFrame* pKFcov : vpKFiCov)
+            vector<KeyFrame*> vpNewCovKFs;
+            vpNewCovKFs.empty();
+            for(KeyFrame* pKFi : spLocalWindowKFs)
             {
-                if(pKFcov && !pKFcov->isBad() && spLocalWindowKFs.find(pKFcov) == spLocalWindowKFs.end())
+                vector<KeyFrame*> vpKFiCov = pKFi->GetBestCovisibilityKeyFrames(numTemporalKFs/2);
+                for(KeyFrame* pKFcov : vpKFiCov)
                 {
-                    vpNewCovKFs.push_back(pKFcov);
+                    if(pKFcov && !pKFcov->isBad() && spLocalWindowKFs.find(pKFcov) == spLocalWindowKFs.end())
+                    {
+                        vpNewCovKFs.push_back(pKFcov);
+                    }
+
                 }
-
             }
-        }
 
-        spLocalWindowKFs.insert(vpNewCovKFs.begin(), vpNewCovKFs.end());
-        nNumTries++;
+            spLocalWindowKFs.insert(vpNewCovKFs.begin(), vpNewCovKFs.end());
+            nNumTries++;
+        }
     }
 
     for(KeyFrame* pKFi : spLocalWindowKFs)
