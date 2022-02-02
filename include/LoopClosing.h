@@ -143,7 +143,7 @@ protected:
 
     void CorrectLoop();
 
-    void MergeLocal();
+    void MergeLocal(bool isForcedMerge = false);
     void MergeLocal2();
 
     void CheckObservations(set<KeyFrame*> &spKFsMap1, set<KeyFrame*> &spKFsMap2);

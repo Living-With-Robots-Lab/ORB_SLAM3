@@ -1223,12 +1223,12 @@ void LoopClosing::ForceMapMerge(KeyFrame* kfto,
                           transform.translation(), 1.0);
     mg2oMergeScw = g2oMergeScw;
 
-    MergeLocal();
+    MergeLocal(true);
 
     mpCurrentKF = mpCurrentKF_save;
 }
 
-void LoopClosing::MergeLocal()
+void LoopClosing::MergeLocal(bool isForcedMerge)
 {
     int numTemporalKFs = 25; //Temporal KFs in the local window if the map is inertial.
 
@@ -1728,7 +1728,7 @@ void LoopClosing::MergeLocal()
         }
 
         // Optimize graph (and update the loop position for each element form the begining to the end)
-        if(mpTracker->mSensor != System::MONOCULAR)
+        if(mpTracker->mSensor != System::MONOCULAR && !isForcedMerge)
         {
             Optimizer::OptimizeEssentialGraph(mpCurrentKF, vpMergeConnectedKFs, vpLocalCurrentWindowKFs, vpCurrentMapKFs, vpCurrentMapMPs);
         }
