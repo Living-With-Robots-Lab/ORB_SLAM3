@@ -1845,15 +1845,16 @@ void Tracking::Track()
 
     if(mState!=NO_IMAGES_YET)
     {
-        if(mLastFrame.mTimeStamp>mCurrentFrame.mTimeStamp)
+        if(mLastFrame.mTimeStamp>mCurrentFrame.mTimeStamp && !mbOnlyTracking)
         {
             cerr << "ERROR: Frame with a timestamp older than previous frame detected!" << endl;
             unique_lock<mutex> lock(mMutexImuQueue);
             mlQueueImuData.clear();
             CreateMapInAtlas();
             return;
-        }
-        else if(mCurrentFrame.mTimeStamp>mLastFrame.mTimeStamp+1.0)
+        } else if (mLastFrame.mTimeStamp>mCurrentFrame.mTimeStamp && mbOnlyTracking) {
+            mState = LOST;
+        } else if(mCurrentFrame.mTimeStamp>mLastFrame.mTimeStamp+1.0)
         {
             // cout << mCurrentFrame.mTimeStamp << ", " << mLastFrame.mTimeStamp << endl;
             // cout << "id last: " << mLastFrame.mnId << "    id curr: " << mCurrentFrame.mnId << endl;
@@ -2069,6 +2070,7 @@ void Tracking::Track()
                 if(mSensor == System::IMU_MONOCULAR || mSensor == System::IMU_STEREO || mSensor == System::IMU_RGBD)
                     Verbose::PrintMess("IMU. State LOST", Verbose::VERBOSITY_NORMAL);
                 bOK = Relocalization();
+                mbVO = bOK;
             }
             else
             {
@@ -2165,6 +2167,10 @@ void Tracking::Track()
             // the camera we will use the local map again.
             if(bOK && !mbVO)
                 bOK = TrackLocalMap();
+            else {
+                std::cout << "local map not tracking!!";
+                std::cout << " bOK: " << bOK << ", mbVO: " << mbVO << std::endl;
+            }
         }
 
         if(bOK)
